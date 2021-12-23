@@ -7,7 +7,7 @@ std::string outputPath = "text.txt";
 
 // Put {a} where you want the artist name to be
 // Put {s} where you want the song name to be
-std::string outputFormat = "{a} - {s}";
+std::string outputFormat = "Current Song: {a} - {s}";
 
 bool getSpotifyInfo(std::string &artist, std::string &song)
 {
@@ -29,7 +29,7 @@ bool getSpotifyInfo(std::string &artist, std::string &song)
 		hwSpotify = FindWindowExA(0, 0, "Chrome_WidgetWin_0", NULL);
 	}
 
-	if (windowTextBuf == "Spotify" || windowTextBuf == "Spotify Free" || windowTextBuf == "Advertisement")
+	if (windowTextBuf == "Spotify" || windowTextBuf == "Spotify Premium" || windowTextBuf == "Spotify Free" || windowTextBuf == "Advertisement")
 		return false;
 
 	std::string windowText = windowTextBuf;
@@ -39,6 +39,9 @@ bool getSpotifyInfo(std::string &artist, std::string &song)
 	artist = windowText.substr(0, found);
 
 	song = windowText.substr(found + 3, windowText.begin() - windowText.end());
+
+	if (artist == "Spotify Premium" || artist == "Spotify Free")
+		return false;
 
 	return true;
 }
@@ -93,9 +96,6 @@ int main(int argc, char** argv, char** envp)
 			lastArtist = artist;
 			lastSong = song;
 		}
-
-		if (GetAsyncKeyState(VK_END))
-			break;
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
